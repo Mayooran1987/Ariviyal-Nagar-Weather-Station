@@ -1,0 +1,1 @@
+[![pages-build-deployment](https://github.com/Mayooran1987/Ariviyal-Nagar-Weather-Station/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/Mayooran1987/Ariviyal-Nagar-Weather-Station/actions/workflows/pages/pages-build-deployment)
