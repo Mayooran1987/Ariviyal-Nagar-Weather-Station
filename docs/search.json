@@ -26,5 +26,12 @@
     "title": "Ariviyal Nagar Weather Station",
     "section": "",
     "text": "Welcome to the About page of Ariviyal Nagar Weather Station, where we invite you to discover the story behind our meteorological endeavor. Learn about our mission, values, and commitment to providing the highest quality weather information to our community and beyond. Delve into the history of our station, our team members, and the technologies driving our operations. Explore our vision for the future and the impact we strive to make in the field of atmospheric science. Join us on this journey as we navigate the complexities of weather and climate, working together to build a more weather-resilient world."
+  },
+  {
+    "objectID": "Papers.html",
+    "href": "Papers.html",
+    "title": "Working Research Papers",
+    "section": "",
+    "text": "Working Research Papers\n\nAdvanced Markov Chain Models for Enhanced Prediction of Temperature, Solar Radiation, and Humidity: Integrating Higher-Order and Hidden Dynamics\nAuthors: Dr T. Mayooran and Mr C. Thuvaragan\nAdvanced Markov Chain Modeling of Weather Parameters with Return Level and Return Period Analysis\nAuthors: Dr T. Mayooran and Mr C. Thuvaragan\nOptimising Weather Forecasting: WRF Model Application to Ariviyal Nagar Weather Station Data"
   }
 ]
