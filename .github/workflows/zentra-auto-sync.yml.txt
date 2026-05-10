@@ -1,0 +1,101 @@
+name: Auto-Sync ZENTRA Cloud Weather Data
+
+on:
+  schedule:
+    # Runs every 3 hours
+    - cron: '0 */3 * * *'
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  sync-weather-data:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests pandas python-dotenv
+        
+    - name: Fetch ZENTRA Cloud Data
+      env:
+        ZENTRA_TOKEN: ${{ secrets.ZENTRA_CLOUD_TOKEN }}
+        ZENTRA_DEVICE: ${{ secrets.ZENTRA_DEVICE_NO }}
+      run: |
+        python - << EOF
+import requests
+import json
+import os
+from datetime import datetime
+
+token = os.environ['ZENTRA_TOKEN']
+device = os.environ['ZENTRA_DEVICE']
+
+# ZENTRA Cloud API endpoint (adjust based on their actual API)
+headers = {'Authorization': f'Token {token}'}
+
+# Fetch recent data (last 24 hours)
+response = requests.get(
+    f'https://zentracloud.com/api/v3/data/{device}/recent',
+    headers=headers,
+    params={'hours': 24}
+)
+
+if response.status_code == 200:
+    data = response.json()
+    
+    # Save raw JSON
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    filename = f'data/raw/zentra_data_{timestamp}.json'
+    
+    os.makedirs('data/raw', exist_ok=True)
+    with open(filename, 'w') as f:
+        json.dump(data, f, indent=2)
+    
+    # Also save as latest.json for easy access
+    with open('data/latest.json', 'w') as f:
+        json.dump(data, f, indent=2)
+    
+    print(f"✅ Data saved to {filename}")
+else:
+    print(f"❌ API Error: {response.status_code}")
+    print(response.text)
+    exit(1)
+EOF
+        
+    - name: Convert to CSV (optional)
+      run: |
+        python - << EOF
+import json
+import pandas as pd
+from datetime import datetime
+
+# Load latest data
+with open('data/latest.json', 'r') as f:
+    data = json.load(f)
+
+# Convert to DataFrame (adjust based on actual ZENTRA data structure)
+if 'measurements' in data:
+    df = pd.DataFrame(data['measurements'])
+    timestamp = datetime.now().strftime('%Y%m%d')
+    csv_filename = f'data/csv/weather_data_{timestamp}.csv'
+    
+    os.makedirs('data/csv', exist_ok=True)
+    df.to_csv(csv_filename, index=False)
+    print(f"✅ CSV saved to {csv_filename}")
+EOF
+        
+    - name: Commit and push changes
+      run: |
+        git config user.name "ZENTRA Auto-Sync Bot"
+        git config user.email "bot@ariviyal-nagar-weather.local"
+        git add data/
+        git diff --staged --quiet || git commit -m "Auto-sync weather data $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        git push
