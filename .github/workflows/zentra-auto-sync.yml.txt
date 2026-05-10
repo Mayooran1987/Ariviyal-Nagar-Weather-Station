@@ -35,8 +35,8 @@ import json
 import os
 from datetime import datetime
 
-token = os.environ['ZENTRA_TOKEN']
-device = os.environ['ZENTRA_DEVICE']
+token = os.environ['622be7e35dcbee982ab54b9dda30d8c1e3c29c02']
+device = os.environ['Z6-22839']
 
 # ZENTRA Cloud API endpoint (adjust based on their actual API)
 headers = {'Authorization': f'Token {token}'}
